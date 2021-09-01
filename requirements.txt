@@ -1,0 +1,7 @@
+aiohttp
+aiodns
+cchardet
+tldextract
+requests
+fastapi
+uvicorn
