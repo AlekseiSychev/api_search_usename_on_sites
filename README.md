@@ -24,8 +24,32 @@ python -r requirements.txtt
 Run server: uvicorn fast_app:app --reload
 Open browser and follow http://127.0.0.1:8000/docs where you can test code
 
+GET requests:
+
 # Single username
 http://127.0.0.1:8000/username/Alex
 
 # Multiple *%* separated usernames
 http://127.0.0.1:8000/username_list/Alex%Nikol%Sam
+
+POST requests:
+
+# Single username
+json =
+        {
+        "uname": "Alex",
+        "dns": "1.1.1.1",
+        "tout": 20
+        }
+
+http://127.0.0.1:8000/username_data_json , json=json
+
+# Multiple  usernames
+json =
+        {
+        "dns": "1.1.1.1",
+        "ulist": "Alex%Jhon%Mary",
+        "tout": 20
+        }
+
+http://127.0.0.1:8000/username_data_json , json=json
