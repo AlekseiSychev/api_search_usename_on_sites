@@ -7,6 +7,8 @@ Y = '\033[33m'  # yellow
 
 def start_search(uname, dns, ulist, tout):
     found = []
+    set_timeout = []
+    set_dns = []
     if uname == None and ulist == None:
         print(f'{R}[-] {C}Please provide {Y}one {C}of the following : \n\t{C}* {Y}username [-u]\n\t{C}* {Y}comma separated usernames [-l]\n\t{C}* {Y}file containing list of usernames [-f]{W}')
         exit()
@@ -22,6 +24,7 @@ def start_search(uname, dns, ulist, tout):
         else:
             print(f'{R}[-] {C}Username Missing!{W}')
             exit()
+
     elif ulist != None:
         mode = 'list'
         tmp = ulist
@@ -43,7 +46,7 @@ def start_search(uname, dns, ulist, tout):
     from datetime import datetime
     from requests import get, exceptions
     from sys import platform
-
+    
     if platform == 'win32':
         asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
         
@@ -224,8 +227,23 @@ def start_search(uname, dns, ulist, tout):
         headers = {
             'User-Agent': 'Mozilla/5.0 (X11; Linux i686; rv:88.0) Gecko/20100101 Firefox/88.0'
         }
-        resolver = aiohttp.AsyncResolver(nameservers=dns)
-        timeout = aiohttp.ClientTimeout(total=tout)
+        try:
+            resolver = aiohttp.AsyncResolver(nameservers=dns)
+            set_dns.append(dns[0])
+
+        except ValueError:
+            resolver = aiohttp.AsyncResolver(nameservers=['1.1.1.1'])
+            set_dns.append('1.1.1.1')
+            print(f'{R}[-] {C}DNS ValueError! Set default dns [1.1.1.1].{W}')
+
+        if tout > 5*60:
+            timeout = aiohttp.ClientTimeout(total=20)
+            print(f'{R}[-] {C}TIMEOUT ValueError! Set default timeout 20 sec.{W}')
+            set_timeout.append(20)
+        else:
+            timeout = aiohttp.ClientTimeout(total=tout)
+            set_timeout.append(tout)
+
         conn = aiohttp.TCPConnector(
             limit=0,
             family=socket.AF_INET,
@@ -259,6 +277,7 @@ def start_search(uname, dns, ulist, tout):
         loop.run_until_complete(main(uname))
         loop.run_until_complete(asyncio.sleep(0))
         loop.close()
+        
 
     try:
         netcheck()
@@ -295,4 +314,10 @@ def start_search(uname, dns, ulist, tout):
     except KeyboardInterrupt:
         print(f'{R}[-] {C}Keyboard Interrupt.{W}')
         exit()
-    return found
+    
+    return {'USERNAME': uname,
+            'USERNAME_list': ulist,
+            'DNS': set_dns[0],
+            'Timeout': set_timeout[0],
+            'URLs': found
+            }
