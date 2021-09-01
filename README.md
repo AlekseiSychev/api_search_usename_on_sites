@@ -13,7 +13,7 @@
 ## Installation
 
 ```bash
-git clone site
+git clone https://github.com/AlekseiSychev/api_search_usename_on_sites.git
 cd api_search_usename_on_sites
 python -r requirements.txtt
 ```
