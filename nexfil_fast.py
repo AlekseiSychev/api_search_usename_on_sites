@@ -7,6 +7,7 @@ Y = '\033[33m'  # yellow
 
 def start_search(uname, dns, ulist, tout):
     found = []
+    set_uname = uname
     set_timeout = []
     set_dns = []
     if uname == None and ulist == None:
@@ -315,7 +316,7 @@ def start_search(uname, dns, ulist, tout):
         print(f'{R}[-] {C}Keyboard Interrupt.{W}')
         exit()
     
-    return {'USERNAME': uname,
+    return {'USERNAME': set_uname,
             'USERNAME_list': ulist,
             'DNS': set_dns[0],
             'Timeout': set_timeout[0],

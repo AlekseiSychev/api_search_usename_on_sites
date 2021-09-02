@@ -15,14 +15,14 @@
 ```bash
 git clone https://github.com/AlekseiSychev/api_search_usename_on_sites.git
 cd api_search_usename_on_sites
-python -r requirements.txtt
+pip3 install -r requirements.txt
 ```
 
 ## Usage
 
 ```bash
-Run server: uvicorn fast_app:app --reload
-Open browser and follow http://127.0.0.1:8000/docs where you can test code
+Run server on command line: uvicorn fast_app:app --reload
+Open browser and follow http://127.0.0.1:8000/docs where you can test requests 
 
 GET requests:
 
