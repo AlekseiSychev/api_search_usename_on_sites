@@ -10,11 +10,11 @@ def start_search(uname, dns, ulist, tout):
     set_uname = uname
     set_timeout = []
     set_dns = []
-    if uname == None and ulist == None:
+    if uname is None and ulist is None:
         print(f'{R}[-] {C}Please provide {Y}one {C}of the following : \n\t{C}* {Y}username [-u]\n\t{C}* {Y}comma separated usernames [-l]\n\t{C}* {Y}file containing list of usernames [-f]{W}')
         exit()
 
-    if uname != None:
+    if uname is not None:
         mode = 'single'
         if len(uname) > 0:
             if uname.isspace():
@@ -26,7 +26,7 @@ def start_search(uname, dns, ulist, tout):
             print(f'{R}[-] {C}Username Missing!{W}')
             exit()
 
-    elif ulist != None:
+    elif ulist is not None:
         mode = 'list'
         tmp = ulist
         if '%' not in tmp:
@@ -47,10 +47,10 @@ def start_search(uname, dns, ulist, tout):
     from datetime import datetime
     from requests import get, exceptions
     from sys import platform
-    
+
     if platform == 'win32':
         asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
-        
+
     codes = [200, 301, 302, 403, 405, 410, 418, 500]
 
     async def clout(url):
@@ -81,7 +81,7 @@ def start_search(uname, dns, ulist, tout):
             else:
                 response = await session.head(url, allow_redirects=True)
                 if response.status in codes:
-                    if test == None:
+                    if test is None:
                         await clout(response.url)
                     elif test == 'url':
                         await test_url(response.url)
@@ -95,7 +95,7 @@ def start_search(uname, dns, ulist, tout):
                     print(f'{R}[-] {Y}[{url}] {W}[{response.status}]')
                 else:
                     pass
-                
+
         except asyncio.exceptions.TimeoutError:
             print(f'{Y}[!] Timeout :{C} {url}{W}')
         except Exception as exc:
@@ -120,16 +120,16 @@ def start_search(uname, dns, ulist, tout):
         ext = tldextract.extract(url)
         subd = ext.subdomain
         if subd != '':
-            base_url = proto + '://' + subd  + '.' + ext.registered_domain
+            base_url = proto + '://' + subd + '.' + ext.registered_domain
         else:
             base_url = proto + '://' + ext.registered_domain
 
-        if url.endswith('/') == False and base_url.endswith('/') == True:
+        if url.endswith('/') is False and base_url.endswith('/') is True:
             if url + '/' != base_url:
                 await clout(url)
             else:
                 pass
-        elif url.endswith('/') == True and base_url.endswith('/') == False:
+        elif url.endswith('/') is True and base_url.endswith('/') is False:
             if url != base_url + '/':
                 await clout(url)
             else:
@@ -173,16 +173,13 @@ def start_search(uname, dns, ulist, tout):
                 if len(resp_body) != 0:
                     tmp_vars = ['results', 'users', 'username']
                     for var in tmp_vars:
-                        try:
-                            if resp_body.get(var) != None:
-                                if len(resp_body[var]) != 0:
-                                    await clout(url)
-                                    return
-                                else:
-                                    pass
+                        if resp_body.get(var) is not None:
+                            if len(resp_body[var]) != 0:
+                                await clout(url)
+                                return
                             else:
                                 pass
-                        except:
+                        else:
                             pass
                 else:
                     pass
@@ -278,7 +275,6 @@ def start_search(uname, dns, ulist, tout):
         loop.run_until_complete(main(uname))
         loop.run_until_complete(asyncio.sleep(0))
         loop.close()
-        
 
     try:
         netcheck()
@@ -293,7 +289,7 @@ def start_search(uname, dns, ulist, tout):
         print(f'{G}[+] {C}DNS Servers : {W}{dns}')
 
         start_time = datetime.now()
-        
+
         if mode == 'single':
             launch(uname)
         elif mode == 'list':
@@ -305,17 +301,17 @@ def start_search(uname, dns, ulist, tout):
 
         end_time = datetime.now()
         delta = end_time - start_time
-        
+
         if mode == 'single':
             print(f'\n{G}[+] {C}Lookup for {Y}{uname} {C}completed in {W}{delta}')
             print(f'\n{G}[+] {Y}{len(found)} {C}Possible Profiles Found for {Y}{uname}{W}')
         elif mode == 'list' or mode == 'file':
             print(f'\n{G}[+] {C}Lookup for {Y}{ulist} {C}completed in {W}{delta}')
-            print(f'\n{G}[+] {Y}{len(found)} {C}Possible Profiles Found for {Y}{ulist}{W}')  
+            print(f'\n{G}[+] {Y}{len(found)} {C}Possible Profiles Found for {Y}{ulist}{W}')
     except KeyboardInterrupt:
         print(f'{R}[-] {C}Keyboard Interrupt.{W}')
         exit()
-    
+
     return {'USERNAME': set_uname,
             'USERNAME_list': ulist,
             'DNS': set_dns[0],
